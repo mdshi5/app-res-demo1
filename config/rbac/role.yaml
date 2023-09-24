@@ -1,0 +1,84 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - appcrs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - appcrs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - appcrs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - dbcrs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - dbcrs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - dbcrs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - entrycrs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - entrycrs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - entrycrs/status
+  verbs:
+  - get
+  - patch
+  - update

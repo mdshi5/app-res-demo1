@@ -1,0 +1,27 @@
+# permissions for end users to view appcrs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: appcr-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: app-resource-demo
+    app.kubernetes.io/part-of: app-resource-demo
+    app.kubernetes.io/managed-by: kustomize
+  name: appcr-viewer-role
+rules:
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - appcrs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - appcrs/status
+  verbs:
+  - get

@@ -1,0 +1,13 @@
+apiVersion: webappres.shi.io/v1
+kind: Entrycr
+metadata:
+  labels:
+    app.kubernetes.io/name: entrycr
+    app.kubernetes.io/instance: entrycr-sample
+    app.kubernetes.io/part-of: app-resource-demo
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: app-resource-demo
+  name: entrycr-sample
+spec:
+  # TODO(user): Add fields here
+  foo: "foo"

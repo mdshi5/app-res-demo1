@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- webappres_v1_entrycr.yaml
+- webappres_v1_appcr.yaml
+- webappres_v1_dbcr.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

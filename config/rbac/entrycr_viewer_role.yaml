@@ -1,0 +1,27 @@
+# permissions for end users to view entrycrs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: entrycr-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: app-resource-demo
+    app.kubernetes.io/part-of: app-resource-demo
+    app.kubernetes.io/managed-by: kustomize
+  name: entrycr-viewer-role
+rules:
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - entrycrs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - webappres.shi.io
+  resources:
+  - entrycrs/status
+  verbs:
+  - get
