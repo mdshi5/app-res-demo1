@@ -66,6 +66,13 @@ func (r *DbcrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		return ctrl.Result{}, depDBErr
 	}
 	l.Info("created db deployment", "name:", depDB.Name, "namespace", depDB.Namespace)
+
+	svcDB, svcDBErr := r.reconcileDBSvc(ctx, dbCR, l)
+	if svcDBErr != nil {
+		l.Info("error in db svc creation")
+		return ctrl.Result{}, svcDBErr
+	}
+	l.Info("created db deployment", "name:", svcDB.Name, "namespace", svcDB.Namespace)
 	return ctrl.Result{}, nil
 }
 

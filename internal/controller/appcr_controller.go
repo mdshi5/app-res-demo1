@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"k8s.io/apimachinery/pkg/types"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -49,6 +50,22 @@ type AppcrReconciler struct {
 func (r *AppcrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
 	l.Info("app reconciliation")
+	appCR := &webappresv1.Appcr{}
+	r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, appCR)
+
+	appDep, appDepErr := r.reconcileappDeployment(ctx, appCR, l)
+	if appDepErr != nil {
+		l.Info("error creating app deployment")
+		return ctrl.Result{}, appDepErr
+	}
+	l.Info("created app deployment", "name:", appDep.Name, "namespace", appDep.Namespace)
+
+	appSvc, appSvcErr := r.reconcileAppSvc(ctx, appCR, l)
+	if appSvcErr != nil {
+		l.Info("error in creating app svc")
+		return ctrl.Result{}, appSvcErr
+	}
+	l.Info("created app deployment", "name:", appSvc.Name, "namespace", appSvc.Namespace)
 	return ctrl.Result{}, nil
 }
 
