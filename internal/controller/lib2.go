@@ -55,7 +55,7 @@ func (r *DbcrReconciler) reconcileDBDeployment(ctx context.Context, parentResour
 	var replicaNum int32 = 1
 	dep := &appsv1.StatefulSet{}
 	dbResName := parentResource.Name + "-db"
-	//secretName := parentResource.Name + "-sec"
+	secretName := parentResource.Name + "-sec"
 	err := r.Get(ctx, types.NamespacedName{Name: dbResName, Namespace: parentResource.Namespace}, dep)
 	if err == nil {
 		l.Info("deployment resource Found")
@@ -91,32 +91,23 @@ func (r *DbcrReconciler) reconcileDBDeployment(ctx context.Context, parentResour
 									Value: "dbshi",
 								},
 								{
-									Name:  "MYSQL_PASSWORD",
-									Value: "db@127",
+									Name: "MYSQL_PASSWORD",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{Name: secretName},
+											Key:                  "dbpass",
+										},
+									},
 								},
 								{
-									Name:  "MYSQL_ROOT_PASSWORD",
-									Value: "root",
+									Name: "MYSQL_ROOT_PASSWORD",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{Name: secretName},
+											Key:                  "rootpass",
+										},
+									},
 								},
-
-								//{
-								//	Name: "MYSQL_PASSWORD",
-								//	ValueFrom: &corev1.EnvVarSource{
-								//		SecretKeyRef: &corev1.SecretKeySelector{
-								//			LocalObjectReference: corev1.LocalObjectReference{Name: secretName},
-								//			Key:                  "db",
-								//		},
-								//	},
-								//},
-								//{
-								//	Name: "MYSQL_ROOT_PASSWORD",
-								//	ValueFrom: &corev1.EnvVarSource{
-								//		SecretKeyRef: &corev1.SecretKeySelector{
-								//			LocalObjectReference: corev1.LocalObjectReference{Name: secretName},
-								//			Key:                  "rootpass",
-								//		},
-								//	},
-								//},
 								{
 									Name:  "MYSQL_DATABASE",
 									Value: "libdb",
