@@ -142,14 +142,14 @@ func (r *DbcrReconciler) reconcileDBDeployment(ctx context.Context, parentResour
 }
 
 func (r *DbcrReconciler) reconcileDBSvc(ctx context.Context, parentResource *webappresv1.Dbcr, l logr.Logger) (corev1.Service, error) {
-	resName := "mysql-db-service"
+	resName := "dbsvc"
 	dbDep := parentResource.Name + "-db"
 	//resName :=parentResource.Name + "-dbsvc"
 	svc := &corev1.Service{}
 	err := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: parentResource.Namespace}, svc)
 	if err == nil {
 		l.Info("db svc Found")
-		return *svc, err
+		return *svc, nil
 	}
 
 	l.Info("db svc not found, Creating new db svc")
@@ -192,7 +192,7 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 	err := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: parentResource.Namespace}, dep)
 	if err == nil {
 		l.Info("app deployment resource Found")
-		return *dep, err
+		return *dep, nil
 	}
 
 	if !errors.IsNotFound(err) {
@@ -248,7 +248,11 @@ func (r *AppcrReconciler) reconcileAppSvc(ctx context.Context, parentResource *w
 	err := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: parentResource.Namespace}, svc)
 	if err == nil {
 		l.Info("App svc Found")
+		return *svc, nil
 
+	}
+	if !errors.IsNotFound(err) {
+		return *svc, err
 	}
 
 	l.Info("svc Not found, Creating new svc")
