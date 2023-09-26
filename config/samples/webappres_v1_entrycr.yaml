@@ -11,3 +11,7 @@ metadata:
 spec:
   # TODO(user): Add fields here
   foo: "foo"
+#  dbimg: ""
+#  dbreplica: ""
+#  appimg: ""
+#  appreplica: ""

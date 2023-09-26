@@ -30,6 +30,8 @@ type AppcrSpec struct {
 
 	// Foo is an example field of Appcr. Edit appcr_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
+	//appImg     string `json:"appimg,omitempty"`
+	//appReplica int32  `json:"appreplica,omitempty"`
 }
 
 // AppcrStatus defines the observed state of Appcr

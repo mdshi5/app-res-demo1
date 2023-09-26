@@ -19,6 +19,7 @@ package controller
 import (
 	"context"
 	"k8s.io/apimachinery/pkg/types"
+	"sync"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -48,6 +49,7 @@ type EntrycrReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.15.0/pkg/reconcile
 func (r *EntrycrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	var wg sync.WaitGroup
 	l := log.FromContext(ctx)
 	entrycr := &webappresv1.Entrycr{}
 	errfind := r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, entrycr)
@@ -55,13 +57,26 @@ func (r *EntrycrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		l.Info("resource EntryCR found")
 	}
 	l.Info("Created ")
-	dbCR, errDB := r.reconcileMyDB(ctx, entrycr, l)
+	dbCR, errDB := go r.reconcileMyDB(ctx, entrycr, l, &wg)
 	if errDB != nil {
 		l.Info("error in db creation")
 		return ctrl.Result{}, errDB
 	}
 	l.Info("created dbCR", "name:", dbCR.Name, "namespace", dbCR.Namespace)
+	//getAll()
+	//get svc
+	//endpoint, err := searchSvc()
+	//if err != nil {
+	//	l.Info("svc not found")
+	//} else {
+	//	if len(endpoint.Subsets) > 0 {
+	//		l.Info("svc found")
+	//	}
+	//}
 
+	//if checkDBReadiness() {
+	//	l.Info("DB Ready")
+	//}
 	appCR, errApp := r.reconcileMyApp(ctx, entrycr, l)
 	if errApp != nil {
 		l.Info("error in app creation")

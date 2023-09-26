@@ -221,6 +221,17 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 									ContainerPort: 8080,
 								},
 							},
+							ReadinessProbe: &corev1.Probe{
+								ProbeHandler: corev1.ProbeHandler{
+									HTTPGet: &corev1.HTTPGetAction{
+										Path: "/login",
+										Port: intstr.FromInt(8080),
+									},
+								},
+								InitialDelaySeconds: 3,
+								PeriodSeconds:       3,
+								TimeoutSeconds:      7,
+							},
 						},
 					},
 					//RestartPolicy: "always",

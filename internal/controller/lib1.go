@@ -7,9 +7,11 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"sync"
 )
 
-func (r *EntrycrReconciler) reconcileMyDB(ctx context.Context, entrycr *webappresv1.Entrycr, l logr.Logger) (webappresv1.Dbcr, error) {
+func (r *EntrycrReconciler) reconcileMyDB(ctx context.Context, entrycr *webappresv1.Entrycr, l logr.Logger, wg *sync.WaitGroup) (webappresv1.Dbcr, error) {
+	defer wg.Done()
 	resName := entrycr.Name + "db"
 	dbCR := &webappresv1.Dbcr{}
 	findErr := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: entrycr.Namespace}, dbCR)
@@ -39,7 +41,8 @@ func (r *EntrycrReconciler) reconcileMyDB(ctx context.Context, entrycr *webappre
 
 }
 
-func (r *EntrycrReconciler) reconcileMyApp(ctx context.Context, entrycr *webappresv1.Entrycr, l logr.Logger) (webappresv1.Appcr, error) {
+func (r *EntrycrReconciler) reconcileMyApp(ctx context.Context, entrycr *webappresv1.Entrycr, l logr.Logger, wg *sync.WaitGroup) (webappresv1.Appcr, error) {
+	defer wg.Done()
 	resName := entrycr.Name + "app"
 	appCR := &webappresv1.Appcr{}
 	findErr := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: entrycr.Namespace}, appCR)

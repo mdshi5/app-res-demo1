@@ -30,6 +30,8 @@ type DbcrSpec struct {
 
 	// Foo is an example field of Dbcr. Edit dbcr_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
+	//dbImg     string `json:"dbimg,omitempty"`
+	//dbReplica int32  `json:"dbreplica,omitempty"`
 }
 
 // DbcrStatus defines the observed state of Dbcr
