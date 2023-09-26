@@ -36,8 +36,8 @@ func (r *DbcrReconciler) reconcileSecret(ctx context.Context, parentResource *we
 		},
 		Type: "Opaque",
 		Data: map[string][]byte{
-			"rootpass": []byte("cm9vdA=="),
-			"dbpass":   []byte("ZGJAMTI3"),
+			"rootpass": []byte("root"),
+			"dbpass":   []byte("db@127"),
 		},
 	}
 
@@ -133,7 +133,7 @@ func (r *DbcrReconciler) reconcileDBDeployment(ctx context.Context, parentResour
 }
 
 func (r *DbcrReconciler) reconcileDBSvc(ctx context.Context, parentResource *webappresv1.Dbcr, l logr.Logger) (corev1.Service, error) {
-	resName := "mysql-db-service"
+	resName := "dbsvc"
 	dbDep := parentResource.Name + "-db"
 	//resName :=parentResource.Name + "-dbsvc"
 	svc := &corev1.Service{}
@@ -223,6 +223,7 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 							},
 						},
 					},
+					//RestartPolicy: "always",
 				},
 			},
 		},
@@ -239,6 +240,7 @@ func (r *AppcrReconciler) reconcileAppSvc(ctx context.Context, parentResource *w
 	err := r.Get(ctx, types.NamespacedName{Name: resName, Namespace: parentResource.Namespace}, svc)
 	if err == nil {
 		l.Info("App svc Found")
+		return *svc, nil
 
 	}
 

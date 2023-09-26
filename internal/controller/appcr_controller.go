@@ -65,7 +65,7 @@ func (r *AppcrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		l.Info("error in creating app svc")
 		return ctrl.Result{}, appSvcErr
 	}
-	l.Info("created app deployment", "name:", appSvc.Name, "namespace", appSvc.Namespace)
+	l.Info("created app svc", "name:", appSvc.Name, "namespace", appSvc.Namespace)
 	return ctrl.Result{}, nil
 }
 
