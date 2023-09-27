@@ -36,6 +36,7 @@ type DbcrSpec struct {
 type DbcrStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	IsDBReady bool `json:"foo,isDBReady"`
 }
 
 //+kubebuilder:object:root=true

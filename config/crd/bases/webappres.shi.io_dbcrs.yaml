@@ -41,6 +41,14 @@ spec:
             type: object
           status:
             description: DbcrStatus defines the observed state of Dbcr
+            properties:
+              foo:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: boolean
+            required:
+            - foo
             type: object
         type: object
     served: true

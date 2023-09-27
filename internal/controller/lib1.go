@@ -29,6 +29,9 @@ func (r *EntrycrReconciler) reconcileMyDB(ctx context.Context, entrycr *webappre
 			Namespace: entrycr.Namespace,
 			Labels:    labels,
 		},
+		Status: webappresv1.DbcrStatus{
+			IsDBReady: false,
+		},
 		//Spec: webappv1.DBSpec{
 		//	Replicanum: entry.Spec.Dbreplica,
 		//	Imgname:    entry.Spec.Dbimage,
