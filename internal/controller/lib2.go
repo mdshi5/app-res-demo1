@@ -188,8 +188,8 @@ func (r *DbcrReconciler) reconcileDBSvc(ctx context.Context, parentResource *web
 
 func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentResource *webappresv1.Appcr, l logr.Logger) (appsv1.Deployment, error) {
 	dbCR := &webappresv1.Dbcr{}
-	myRes := removeTextdFromLast(parentResource.Name, "app")
-	dbCRErr := r.Get(ctx, types.NamespacedName{Name: myRes + "db", Namespace: parentResource.Namespace}, dbCR)
+	entryRes := removeTextdFromLast(parentResource.Name, "app")
+	dbCRErr := r.Get(ctx, types.NamespacedName{Name: entryRes + "db", Namespace: parentResource.Namespace}, dbCR)
 	var replicaNum int32 = 1
 	resName := parentResource.Name + "-appdep"
 	dep := &appsv1.Deployment{}
@@ -238,6 +238,31 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 									Protocol:      corev1.ProtocolTCP,
 									ContainerPort: 8080,
 								},
+							},
+							ReadinessProbe: &corev1.Probe{
+								ProbeHandler: corev1.ProbeHandler{
+									Exec: &corev1.ExecAction{
+										Command: []string{
+											"/bin/sh",
+											"-c",
+											"apt-get update && apt-get install -y netcat telnet && nc -z dbsvc 3306",
+										},
+									},
+								},
+								InitialDelaySeconds: 5,
+								PeriodSeconds:       5,
+								TimeoutSeconds:      5,
+							},
+							LivenessProbe: &corev1.Probe{
+								ProbeHandler: corev1.ProbeHandler{
+									HTTPGet: &corev1.HTTPGetAction{
+										Path: "/login",
+										Port: intstr.FromInt(8080),
+									},
+								},
+								InitialDelaySeconds: 8,
+								PeriodSeconds:       5,
+								TimeoutSeconds:      5,
 							},
 						},
 					},
