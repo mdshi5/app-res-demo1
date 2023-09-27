@@ -62,12 +62,14 @@ func (r *EntrycrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 	l.Info("created dbCR", "name:", dbCR.Name, "namespace", dbCR.Namespace)
 
-	appCR, errApp := r.reconcileMyApp(ctx, entrycr, l)
-	if errApp != nil {
-		l.Info("error in app creation")
-		return ctrl.Result{}, errApp
+	if dbCR.Status.IsDBReady {
+		appCR, errApp := r.reconcileMyApp(ctx, entrycr, l)
+		if errApp != nil {
+			l.Info("error in app creation")
+			return ctrl.Result{}, errApp
+		}
+		l.Info("created app", "name:", appCR.Name, "namespace", appCR.Namespace)
 	}
-	l.Info("created app", "name:", appCR.Name, "namespace", appCR.Namespace)
 
 	return ctrl.Result{}, nil
 }
