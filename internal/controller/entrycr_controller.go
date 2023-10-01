@@ -62,13 +62,21 @@ func (r *EntrycrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 	l.Info("created dbCR", "name:", dbCR.Name, "namespace", dbCR.Namespace)
 
-	if dbCR.Status.IsDBReady {
-		appCR, errApp := r.reconcileMyApp(ctx, entrycr, l)
-		if errApp != nil {
-			l.Info("error in app creation")
-			return ctrl.Result{}, errApp
+	if dbCR.Status.IsDBReady == "init" {
+		isReplicaReady, errReplica := r.depInfo(dbCR.Name+"-db", dbCR.Namespace, l)
+		if isReplicaReady == true {
+			l.Info("Entered into app portion", errReplica)
+			//dbCR.Status.IsDBReady = "replica-ready"
+			appCR, errApp := r.reconcileMyApp(ctx, entrycr, l)
+			if errApp != nil {
+				l.Info("error in app creation")
+				return ctrl.Result{}, errApp
+			}
+			l.Info("created app", "name:", appCR.Name, "namespace", appCR.Namespace)
+		} else {
+			l.Info("Couldn't create app", errReplica)
 		}
-		l.Info("created app", "name:", appCR.Name, "namespace", appCR.Namespace)
+
 	}
 
 	return ctrl.Result{}, nil

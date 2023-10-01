@@ -66,7 +66,7 @@ func (r *DbcrReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		l.Info("error in db deployment creation")
 		return ctrl.Result{}, depDBErr
 	} else {
-		dbCR.Status.IsDBReady = true
+		dbCR.Status.IsDBReady = "init"
 		if err := r.Client.Status().Update(context.TODO(), dbCR); err != nil {
 			return ctrl.Result{}, err
 		}

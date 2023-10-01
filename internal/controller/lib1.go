@@ -30,7 +30,7 @@ func (r *EntrycrReconciler) reconcileMyDB(ctx context.Context, entrycr *webappre
 			Labels:    labels,
 		},
 		Status: webappresv1.DbcrStatus{
-			IsDBReady: false,
+			IsDBReady: "no-change",
 		},
 		//Spec: webappv1.DBSpec{
 		//	Replicanum: entry.Spec.Dbreplica,

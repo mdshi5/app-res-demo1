@@ -11,7 +11,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"time"
 )
 
 func (r *DbcrReconciler) reconcileSecret(ctx context.Context, parentResource *webappresv1.Dbcr, l logr.Logger) (corev1.Secret, error) {
@@ -53,7 +52,7 @@ func (r *DbcrReconciler) reconcileSecret(ctx context.Context, parentResource *we
 }
 
 func (r *DbcrReconciler) reconcileDBDeployment(ctx context.Context, parentResource *webappresv1.Dbcr, l logr.Logger) (appsv1.StatefulSet, error) {
-	var replicaNum int32 = 1
+	var replicaNum int32 = 3
 	dep := &appsv1.StatefulSet{}
 	dbResName := parentResource.Name + "-db"
 	//secretName := parentResource.Name + "-sec"
@@ -187,9 +186,9 @@ func (r *DbcrReconciler) reconcileDBSvc(ctx context.Context, parentResource *web
 }
 
 func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentResource *webappresv1.Appcr, l logr.Logger) (appsv1.Deployment, error) {
-	dbCR := &webappresv1.Dbcr{}
-	entryRes := removeTextdFromLast(parentResource.Name, "app")
-	dbCRErr := r.Get(ctx, types.NamespacedName{Name: entryRes + "db", Namespace: parentResource.Namespace}, dbCR)
+	//dbCR := &webappresv1.Dbcr{}
+	//entryRes := removeTextdFromLast(parentResource.Name, "app")
+	//dbCRErr := r.Get(ctx, types.NamespacedName{Name: entryRes + "db", Namespace: parentResource.Namespace}, dbCR)
 	var replicaNum int32 = 1
 	resName := parentResource.Name + "-appdep"
 	dep := &appsv1.Deployment{}
@@ -202,11 +201,11 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 	if !errors.IsNotFound(err) {
 		return *dep, err
 	}
-	if dbCRErr == nil {
-		l.Info("dbCR resource found")
-	} else {
-		return *dep, dbCRErr
-	}
+	//if dbCRErr == nil {
+	//	l.Info("dbCR resource found")
+	//} else {
+	//	return *dep, dbCRErr
+	//}
 
 	labels := map[string]string{
 		"app": resName,
@@ -271,21 +270,23 @@ func (r *AppcrReconciler) reconcileappDeployment(ctx context.Context, parentReso
 		},
 	}
 	l.Info("Creating app...", "app name", dep.Name, "app namespace", dep.Namespace)
-	if dbCR.Status.IsDBReady {
-		dbDep := &appsv1.StatefulSet{}
-		dbDepErr := r.Get(ctx, types.NamespacedName{Name: dbCR.Name + "-db", Namespace: dbCR.Namespace}, dbDep)
-		if dbDepErr == nil {
-			time.Sleep(5000 * time.Millisecond)
-			errAppcr := r.Create(ctx, dep)
-			return *dep, errAppcr
-		}
-	}
-	customErr := CustomError{
-		Message: "couldn't create app deployment",
-		Code:    500,
-	}
-	return *dep, customErr
+	//if dbCR.Status.IsDBReady {
+	//	dbDep := &appsv1.StatefulSet{}
+	//	dbDepErr := r.Get(ctx, types.NamespacedName{Name: dbCR.Name + "-db", Namespace: dbCR.Namespace}, dbDep)
+	//	if dbDepErr == nil {
+	//		time.Sleep(5000 * time.Millisecond)
+	//		errAppcr := r.Create(ctx, dep)
+	//		return *dep, errAppcr
+	//	}
+	//}
+	//customErr := CustomError{
+	//	Message: "couldn't create app deployment",
+	//	Code:    500,
+	//}
 
+	err = r.Create(ctx, dep)
+	//return *dep, customErr
+	return *dep, err
 }
 
 func (r *AppcrReconciler) reconcileAppSvc(ctx context.Context, parentResource *webappresv1.Appcr, l logr.Logger) (corev1.Service, error) {

@@ -31,12 +31,20 @@ type DbcrSpec struct {
 	// Foo is an example field of Dbcr. Edit dbcr_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
 }
+type dbStatus string
+
+// Define enum values as constants
+const (
+	NoChange      dbStatus = "no-change"
+	DBInit        dbStatus = "init"
+	ReplicasReady dbStatus = "replica-ready"
+)
 
 // DbcrStatus defines the observed state of Dbcr
 type DbcrStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	IsDBReady bool `json:"foo,isDBReady"`
+	IsDBReady dbStatus `json:"foo,isDBReady"`
 }
 
 //+kubebuilder:object:root=true
